@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - LSF</title>
+
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="assets/css/index.css">
+
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+
+        <% if (dashboardOpt === false) { %>
+          <li>
+            <a href="/user/login" class="btn">SignIn</a>
+          </li>
+        <% } else { %>
+          <li>
+            <a href="/user/dashboard" class="btn">Dashboard</a>
+          </li>
+        <% } %>
+        
+        <li>
+          <a href="/user/register" class="btn">Create User Account</a>
+        </li>
+        <li>
+          <a href="/emp/register" class="btn">Create Employee Account</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="main">
+      <div class="parent">
+        <h1>Welcome to Local Services Finder</h1>
+        <h3>Search </h3>
+
+        <!-- Updated form with proper IDs -->
+        <form id="searchForm">
+          <div class="form-control">
+            <input type="text" name="place" id="place" required placeholder="Place/Location">
+            <select name="jobCategoryId" id="jobCategoryId" required>
+              <option hidden>Job Title</option>
+              <% data.forEach(col => { %>
+                <option value="<%= col.id %>"><%= col.name %></option>
+              <% }) %>
+            </select>
+            <button type="submit">
+              <i class="bi bi-search"></i> Search
+            </button>
+          </div>
+        </form>
+
+        <!-- Table to display results -->
+        <div class="table">
+          <table id="employeeTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Place</th>
+                <th>Excepted Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Employees will be dynamically populated here -->
+            </tbody>
+          </table>
+        </div>
+      
+      </div>
+    </section>
+
+    <!-- Modal to show employee details -->
+    <div id="employeeModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Employee Details</h3>
+        <p><strong>Phone:</strong> <span id="employeePhone"></span></p>
+        <p><strong>Education:</strong> <span id="employeeEducation"></span></p>
+        <p><strong>Experience:</strong> <span id="employeeExperience"></span></p>
+        <p><strong>Average Rating:</strong> <span id="employeeRating"></span></p>
+        <p><strong>Reports Count:</strong> <span id="employeeReports"></span></p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>Amarthya</span></strong>. All Rights Reserved
+    </div>
+  </footer>
+
+   
+
+  <script>
+    document.getElementById('searchForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); // Prevent form from reloading the page
+      
+      const place = document.getElementById('place').value;
+      const jobCategoryId = document.getElementById('jobCategoryId').value;
+  
+      const response = await fetch(`/search?place=${place}&jobCategoryId=${jobCategoryId}`);
+      const employees = await response.json();
+      
+      const employeeTable = document.getElementById('employeeTable').getElementsByTagName('tbody')[0];
+      employeeTable.innerHTML = ''; // Clear previous results
+  
+      employees.forEach(employee => {
+        const row = `
+          <tr>
+            <td>${employee.name}</td>
+            <td>${employee.expertise.name}</td>
+            <td>${employee.place}</td>
+            <td>Rs. ${employee.amount}</td>
+            <td>
+
+              <% if (active === false) { %>
+                <button disabled onclick="viewMore(${employee.id})" class='btn-view'>View More</button>
+              <% } else { %>
+                <button onclick="viewMore(${employee.id})" class='btn-view'>View More</button>
+              <% } %>
+
+              <% if (active === false) { %>
+                <button disabled onclick="bookEmployee(${employee.id})" class='btn-book'
+                style="background-color: #888888;">Book</button>
+              <% } else { %>
+                <button onclick="bookEmployee(${employee.id})" class='btn-book'>Book</button>
+              <% } %>
+              
+            </td>
+          </tr>
+        `;
+        employeeTable.innerHTML += row;
+      });
+    });
+
+  async function bookEmployee(empId) {
+    try {
+      const response = await fetch(`/book/${empId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.status === 200) {
+        alert('Employee booked successfully!');
+        window.location.href = '/';
+      } else if (response.status === 401) {
+        alert('Please log in to book an employee.');
+        window.location.href = '/user/login'; // Redirect to login if unauthorized
+      } else {
+        alert('Failed to book the employee. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error booking the employee:', error);
+      alert('An error occurred while booking the employee.');
+    }
+  }
+
+  </script>
+
+  <script>
+    async function viewMore(empId) {
+      try {
+        const response = await fetch(`/employee/${empId}`);
+        if (response.ok) {
+          const data = await response.json();
+
+          // Populate the modal with employee details
+          document.getElementById('employeePhone').textContent = data.phone || 'Not available';
+          document.getElementById('employeeEducation').textContent = data.education || 'Not available';
+          document.getElementById('employeeExperience').textContent = data.experience + ' years' || 'Not available';
+          document.getElementById('employeeRating').textContent = data.avgRating || 'No ratings';
+          document.getElementById('employeeReports').textContent = data.reportsCount || 0;
+
+          // Show the modal
+          document.getElementById('employeeModal').style.display = 'block';
+        } else {
+          alert('Failed to fetch employee details.');
+        }
+      } catch (error) {
+        console.error('Error fetching employee details:', error);
+      }
+    }
+
+    // Close the modal when the close button is clicked
+    document.querySelector('.close-btn').addEventListener('click', () => {
+      document.getElementById('employeeModal').style.display = 'none';
+    });
+  </script>
+
+  
+</body>
+</html>

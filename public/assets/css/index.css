@@ -1,0 +1,279 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a:link,
+a:active,
+a:visited {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 12px 18px;
+    border: 2px solid #fff;
+    border-radius: 6px;
+}
+
+.btn:hover {
+    background-color: #fff;
+    color: #1a1a1a;
+    font-weight: bolder;
+    border: none;
+    outline: none;
+}
+
+body {
+    font-family: sans-serif;
+    font-size: 18px;
+}
+
+header {
+    padding: 10px 14px;
+    background-color: #1a1a1a;
+}
+
+header nav ul {
+    list-style-type: none;
+    display: flex;
+}
+
+header nav ul li {
+    padding: 4px 8px;
+}
+
+.main {
+    height: 100vh;
+    background-image: linear-gradient(360deg, #111111d2, #00000056), url('../img/bg.jpg');
+    background-size: cover;
+    position: relative;
+}
+
+.main .parent {
+    width: 60%;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main .parent h1 {
+    margin-bottom: 30px;
+}
+
+.main .parent h1::first-letter {
+    font-size: 200%;
+}
+
+.main .parent h3 {
+    font-weight: normal;
+    margin-bottom: 10px;
+}
+
+.parent .form-control input {
+    padding: 10px 14px;
+    margin-right: 10px;
+    width: 300px;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+}
+
+.parent .form-control input:focus {
+    outline: 4px solid rgba(116, 188, 255, 0.712);
+}
+
+.parent .form-control select {
+    padding: 10px 14px;
+    margin-right: 10px;
+    width: 300px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+}
+
+.parent .form-control select:focus {
+    outline: 4px solid rgba(116, 188, 255, 0.712);
+}
+
+.parent .form-control button {
+    background-color: #fff;
+    color: #2e6bf0;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+}
+
+.parent .form-control button:hover {
+    scale: .9;
+}
+
+table {
+    margin-top: 30px;
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table thead {
+    background-color: #2e2e2e;
+    color: #fff;
+    padding: 8px 14px;
+}
+
+table thead tr th {
+    padding: 20px 14px;
+    font-size: 20px;
+}
+
+table thead tr th:nth-of-type(1) {
+    border-top-left-radius: 14px;
+}
+
+table thead tr th:nth-of-type(4) {
+    border-top-right-radius: 14px;
+}
+
+table tbody {
+    background-color: #fff;
+    color: #1a1a1a;
+    text-align: center;
+}
+
+table tbody tr td {
+    padding: 10px 14px;
+}
+
+table tbody tr td .btn-view {
+    background-color: #1a94cd;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 14px;
+    border: none;
+    font-size: 20px;
+    border-radius: 8px;
+    margin-right: 6px;
+    cursor: pointer;
+}
+
+table tbody tr td .btn-book {
+    background-color: #1acd56;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 14px;
+    border: none;
+    font-size: 20px;
+    border-radius: 8px;
+    margin-right: 6px;
+    cursor: pointer;
+}
+
+.copyright {
+    padding: 10px 0;
+    text-align: center;
+}
+
+.btn-view {
+    background-color: rgb(194, 194, 194) !important;
+    color: #ffffff !important;
+}
+
+
+/* Modal Background */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: #ffffff;
+    margin: auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: left;
+  }
+  
+  /* Close Button */
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .close-btn:hover {
+    color: #ff0000;
+  }
+  
+  /* Heading */
+  .modal-content h3 {
+    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  /* Paragraph Text */
+  .modal-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 10px 0;
+    color: #555;
+  }
+  
+  .modal-content p strong {
+    color: #333;
+  }
+  
+  /* Responsive Design for smaller screens */
+  @media (max-width: 768px) {
+    .modal-content {
+      width: 95%;
+      padding: 20px;
+    }
+  }
+  
+  /* Additional Styling for better look */
+  .modal-content {
+    animation: fadeIn 0.4s;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Extra padding for mobile view */
+  @media screen and (max-width: 480px) {
+    .modal-content {
+      padding: 20px;
+    }
+  }
+  

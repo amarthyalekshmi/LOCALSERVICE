@@ -1,0 +1,17 @@
+.col {
+    background-color: #fff;
+    color: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    margin-right: 8px;
+    border-radius: 8px;
+    box-shadow: 10px 10px 15px #1a1a1a25;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.col i {
+    font-size: 48px;
+}

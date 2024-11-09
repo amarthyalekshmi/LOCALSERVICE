@@ -1,0 +1,113 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  pwd      String
+  createAt DateTime @default(now())
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  password  String
+  phone     String    @unique
+  place     String // User's place (e.g., city or town)
+  address   String // Full address of the user
+  bookings  Booking[]
+  ratings   Rating[]
+  reports   Report[] // Relation to the reports
+  createdAt DateTime  @default(now())
+}
+
+model Employee {
+  id          Int         @id @default(autoincrement())
+  name        String
+  password    String
+  phone       String      @unique
+  expertise   JobCategory @relation(fields: [expertiseId], references: [id])
+  expertiseId Int
+  bookings    Booking[]
+  ratings     Rating[]
+  isAvailable Boolean     @default(true)
+  place       String // Employee's place (e.g., city or town)
+  amount      Float?
+  education   String? // Higher education (optional)
+  experience  Int // Number of years of experience
+  address     String // Full address of the employee
+  createdAt   DateTime    @default(now())
+  reports     Report[] // Relation to the reports
+}
+
+model JobCategory {
+  id        Int        @id @default(autoincrement())
+  name      String
+  employees Employee[]
+  bookings  Booking[]
+  createdAt DateTime   @default(now())
+}
+
+model Booking {
+  id            Int           @id @default(autoincrement())
+  bookingNo     String        @unique @default(uuid()) // Unique booking number with UUID
+  user          User          @relation(fields: [userId], references: [id])
+  userId        Int
+  employee      Employee      @relation(fields: [employeeId], references: [id])
+  employeeId    Int
+  jobCategory   JobCategory   @relation(fields: [jobCategoryId], references: [id])
+  jobCategoryId Int
+  status        BookingStatus @default(PENDING)
+  date          DateTime
+  rating        Rating? // Nullable until rating is given after completion
+  createdAt     DateTime      @default(now())
+  reports       Report[] // Relation to reports related to this booking
+}
+
+model Rating {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  score      Int      @default(0) // Rating score (e.g., 1-5)
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  bookingId  Int      @unique // Mark this as unique to enforce one-to-one
+  createdAt  DateTime @default(now())
+}
+
+// New Report Model
+model Report {
+  id          Int          @id @default(autoincrement())
+  user        User         @relation(fields: [userId], references: [id])
+  userId      Int
+  employee    Employee?    @relation(fields: [employeeId], references: [id]) // Optional if complaint isn't about a specific employee
+  employeeId  Int?
+  booking     Booking?     @relation(fields: [bookingId], references: [id]) // Optional if complaint isn't about a specific booking
+  bookingId   Int?
+  description String // Description of the complaint
+  status      ReportStatus @default(PENDING) // Status of the report
+  createdAt   DateTime     @default(now())
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// Enum to track the status of the report
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
